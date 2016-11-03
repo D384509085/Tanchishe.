@@ -3,37 +3,38 @@
 #include<stdlib.h>
 #include<windows.h>
 #include<conio.h>
-void go(char *snake_a,char *snake_b,char *head,char *food,int snakelong){	//改变snake各个部位的位置，前进一格 
+void go(char *snake_a,char *snake_b,char *head,char *food,int snakelong){	//改变snake各个部位的位置，前进一格
 	char c=2,f=3;
-	for(int i=0;i<=snakelong;i++){							//head[0]存储头横坐标jhead[1]存储纵坐标i 
+ for(int i=snakelong-1;i>=0;i--){							//head[0]存储头横坐标jhead[1]存储纵坐标i
 		snake_a[i+1]=snake_a[i];
 		snake_b[i+1]=snake_b[i];
-	}snake_a[0]=head[0];
-	snake_b[0]=head[1]; 
+	}
+	snake_a[0]=head[0];
+	snake_b[0]=head[1];
 	system("cls");
-	for(int i=0;i<=20;i++){				//场景边界 1-39横j 1-39纵i 
+	for(int i=0;i<=20;i++){				//场景边界 1-39横j 1-39纵i
 		for(int j=0;j<=40;j++){
 			if(j==40){
-				printf("\n");			//打印场景边界 
+				printf("\n");			//打印场景边界
 			}
 			else if(j==0){
-				printf("▕");
+				printf("|");
 			}
 			else if(i==0|i==20){
-				printf("▔");
+				printf("-");
 			}
 			else for(int k=0;k<=snakelong;k++){
 				if(j==snake_a[k]&&i==snake_b[k]){
-					printf("□");
+					printf("%%");
 				}
 			}
 			if(j==food[0]&&i==food[1]){
-				printf("★");
+				printf("*");
 			}
-			else printf("  ");
+			else printf("`");
 		}
 	}
-}	
+}
 void ne(char *food){
 	srand(time(NULL));
 	food[0]=(char) (rand()%30+4);
@@ -43,27 +44,27 @@ int main(){
 	char c=2;
 	int a,b,snakelong=1;
 	char snake_a[50],snake_b[50],head[2],food[2],direction='s';
-	for(int i=0;i<=20;i++){				//场景边界 1-39横j 1-19纵i 
+	for(int i=0;i<=20;i++){				//场景边界 1-39横j 1-19纵i
 		for(int j=0;j<=40;j++){
 			if(j==40){
-				printf("\n");			//打印场景边界 
+				printf("\n");			//打印场景边界
 			}
 			else if(j==0){
-				printf("▕");
+				printf("|");
 			}
 			else if(i==0|i==20){
-				printf("▔");
+				printf("-");
 			}
-			else if(j==5&&(i==10||i==11)){
-				printf("□");
+			else if(j==5&&(i==10||i==9)){
+				printf("%%");
 			}
-			else printf("  ");
+			else printf("`");
 		}
-	}	
+	}
 	snake_a[0]=head[0]=5;
 	snake_b[0]=head[1]=10;
 	snake_a[1]=5;
-	snake_b[1]=11;
+	snake_b[1]=9;
 	ne(food);
 	while(1){
 	if(kbhit()){
@@ -76,18 +77,26 @@ int main(){
 		case 'd':head[0]++;break;
 		default :break;
 	}
-	go(snake_a,snake_b,head,food,snakelong);
-	if(head[0]==0||head[0]==40||head[1]==0||head[1]==20){
+	if((head[0]==0||head[0]==40||
+	    head[1]==0||head[1]==20)||
+	   (head[0]==snake_a[snakelong]&&
+		head[1]==snake_b[snakelong])){
 		printf("gg思密达");
-		system("pause"); 
+		system("pause");
+		for(int i=0;i<=snakelong;i++){
+			printf("%d %d %d\n",i,snake_a[i],snake_b[i]);
+		}
+		system("pause");
 	}
 	if(head[0]==food[0]&&head[1]==food[1]){
 		snakelong++;
 		snake_a[snakelong]=snake_a[snakelong-1];
 		snake_b[snakelong]=snake_b[snakelong-1];
 		ne(food);
-	}	
-	_sleep(100);
-}
+		go(snake_a,snake_b,head,food,snakelong);
+	}
+	else go(snake_a,snake_b,head,food,snakelong);
+	_sleep(50);
+} 
 	return 0;
 }
